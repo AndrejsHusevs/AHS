@@ -1,0 +1,9 @@
+removed from SiteController line 23
+	public function graphql()
+    {
+        header('Content-Type: application/json');
+        echo GraphQL::handle();
+    }
+	
+	
+	
