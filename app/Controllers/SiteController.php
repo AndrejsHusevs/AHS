@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers;
+namespace app\Controllers;
 
-use App\Core\Controller;
-use App\Models\SiteModel;
-use App\Controllers\GraphQL;
+use app\Core\Controller;
+use app\Models\SiteModel;
+use app\Controllers\GraphQL;
 
 class SiteController extends Controller
 {

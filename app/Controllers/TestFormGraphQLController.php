@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controllers;
+namespace app\Controllers;
 
-use App\Core\Controller;
-use App\Controllers\GraphQL;
+use app\Core\Controller;
+use app\Controllers\GraphQL;
 
 class TestFormGraphQLController extends Controller
 {
