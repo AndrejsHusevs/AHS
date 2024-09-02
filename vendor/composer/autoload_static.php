@@ -11,10 +11,6 @@ class ComposerStaticInitadd81272206f27639af1c2d4baf78ed7
     );
 
     public static $prefixLengthsPsr4 = array (
-        'a' => 
-        array (
-            'app\\' => 4,
-        ),
         'G' => 
         array (
             'GraphQL\\' => 8,
@@ -30,10 +26,6 @@ class ComposerStaticInitadd81272206f27639af1c2d4baf78ed7
     );
 
     public static $prefixDirsPsr4 = array (
-        'app\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/app',
-        ),
         'GraphQL\\' => 
         array (
             0 => __DIR__ . '/..' . '/webonyx/graphql-php/src',
@@ -44,12 +36,12 @@ class ComposerStaticInitadd81272206f27639af1c2d4baf78ed7
         ),
         'App\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app',
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 
     public static $fallbackDirsPsr0 = array (
-        0 => __DIR__ . '/../..' . '/app',
+        0 => __DIR__ . '/../..' . '/src',
     );
 
     public static $classMap = array (

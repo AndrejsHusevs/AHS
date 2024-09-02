@@ -3,11 +3,10 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "app\\": "app/"
+            "App\\": "src/"
         },
         "psr-0": {
-            "": "app/"
+            "": "src/"
         }
     },
     "require": {

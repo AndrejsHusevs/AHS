@@ -1,8 +1,6 @@
-RewriteEngine On
-
-# Redirect all requests to the public folder unless they already point there
+RewriteEngine on
 RewriteCond %{REQUEST_URI} !^/ahs/public/
+RewriteCond %{REQUEST_URI} !^/ahs/index.html
+RewriteCond %{REQUEST_URI} !^/ahs/
 RewriteRule ^(.*)$ /ahs/public/$1 [L]
-
-# Specify the directory index
 DirectoryIndex index.php

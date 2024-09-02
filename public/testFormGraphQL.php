@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?></title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <title>GraphQL TESTING PAGE</title>
 </head>
 <body>
-    <h1><?= $title ?></h1>
+    <h1>GraphQL TESTING PAGE</h1>
    
     <form id="graphqlForm">
         <textarea id="queryInput" name="query" rows="10" cols="80">{ echo(message: "Hello World") }</textarea><br />
@@ -31,7 +30,6 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // You can display the response in the page or alert it
                 document.body.insertAdjacentHTML('beforeend', '<pre>' + JSON.stringify(data, null, 2) + '</pre>');
             })
             .catch((error) => {
