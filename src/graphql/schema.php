@@ -19,8 +19,7 @@ $queryType = new ObjectType([
             'type' => Type::listOf($categoryType),
             'resolve' => function() {                
                 $categoryModel = new \App\Classes\Models\Category();                
-                //return $categoryModel->getAllCategoryNamesByLanguageId("english");
-                return $categoryModel->getAllCategories();
+                return $categoryModel->getAllCategoryNamesByLanguageId("english");
             },
         ],
     ],

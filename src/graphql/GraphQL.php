@@ -3,6 +3,7 @@
 namespace App\graphql;
 
 use GraphQL\GraphQL as GraphQLBase;
+use GraphQL\Error\DebugFlag;
 use RuntimeException;
 use Throwable;
 
@@ -28,13 +29,15 @@ class GraphQL {
             $variableValues = $input['variables'] ?? null;
         
             // TODO debug
-            $rootValue = ['prefix' => 'You said: '];
+            //$rootValue = ['prefix' => 'You said: '];
+            $rootValue = [];
             $result = GraphQLBase::executeQuery($schema, $query, $rootValue, null, $variableValues);
             $output = $result->toArray();
         } catch (Throwable $e) {
             $output = [
                 'error' => [
                     'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
                 ],
             ];
         }
