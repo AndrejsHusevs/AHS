@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Header = () => {
+const Header = ({ onCategorySelect }) => {
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState(null);
 
@@ -23,21 +23,23 @@ const Header = () => {
                     body: JSON.stringify({ query }),
                 });
                 const result = await response.json();
-                console.log('Full response:', result);
                 if (result.errors) {
-                    console.error('GraphQL errors:', result.errors);
-                    setError('Failed to fetch categories 3');
+                    setError('Failed to fetch categories');
                 } else {
                     setCategories(result.data.categories);
                 }
             } catch (error) {
-                console.error('Fetch error:', error);
-                setError('Failed to fetch categories 4');
+                setError('Failed to fetch categories');
             }
         };
 
         fetchCategories();
     }, []);
+
+    const handleCategoryClick = (categoryId) => {    
+        console.log("Category clicked:", categoryId); // Debugging statement    
+        onCategorySelect(categoryId);
+    };
 
     return (
         <header>
@@ -55,7 +57,7 @@ const Header = () => {
                             ) : (
                                 categories.map((category) => (
                                     <li className="nav-item" key={category.id}>
-                                        <a className="nav-link" href="#">{category.name}</a>
+                                        <a className="nav-link" href="#" onClick={() => handleCategoryClick(category.id)}>{category.name}</a>
                                     </li>
                                 ))
                             )}

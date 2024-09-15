@@ -63,17 +63,20 @@ use App\Classes\Models\AttributeItem;
     <hr>
     <?php
 
+$categoryModel = new Category();
 
-    echo "<hr>Categories:<br/>";
-    $categoryModel = new Category();                
+/*
+    echo "<hr>Categories:<br/>";                
     print_r($categoryModel->getAllCategoryNamesByLanguageId("english"));
-    
-    
+*/  
+ 
+/*
     echo "<hr>Languages:<br/>";
     $languageModel = new Language();  
     print_r($languageModel->getAll());
+*/
 
-
+/*
     echo "<hr>Attributes:<br/>";
     $swatchAttributeModel = new SwatchAttribute();
     $swatchAttributes = $swatchAttributeModel->getAll();
@@ -81,7 +84,7 @@ use App\Classes\Models\AttributeItem;
     $textAttributes = $textAttributeModel->getAll();
     $allAttributes = array_merge($swatchAttributes, $textAttributes);
     print_r($allAttributes);
-
+*/
 
     echo "<hr>Products:<br/>";
     $productModel = new Product();
@@ -92,16 +95,27 @@ use App\Classes\Models\AttributeItem;
     $attributeItemModel = new AttributeItem();
 
     foreach ($products as &$product) {
+        
         $productNameDescription = $productNameDescriptionModel->getByProductIdAndLanguageId($product['id'], 'english');
         if ($productNameDescription) {
             $product['name'] = $productNameDescription['name'];
             $product['description'] = $productNameDescription['description'];
         }
-        $productGalleries = $productGalleryModel->getByProductId($product['id']);
         echo $product['id'] . "__________" . $product['name'] . "<br/>";
+
+        /*
+        $productGalleries = $productGalleryModel->getByProductId($product['id']);        
         foreach ($productGalleries as $productGallery) {
             echo "__________" . $productGallery['link'] . "<br/>";
         }
+        */
+        // Fetch and print attribute items for the product
+        echo "Categories:<br/>";
+        $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
+        $product['category'] = $category['name'] ?? null;
+        echo "__________" . $product['category'] . "<br/>";
+
+/*
         // Fetch and print attribute items for the product
         echo "Attributes:<br/>";
         $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
@@ -112,6 +126,8 @@ use App\Classes\Models\AttributeItem;
                 echo "____________________" . $attributeItem['displayvalue'] . "<br/>";
             }
         }   
+*/
+        echo "<br/><br/>";
     }
 
 
