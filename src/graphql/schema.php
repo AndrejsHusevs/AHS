@@ -69,59 +69,69 @@ $queryType = new ObjectType([
             },
         ],
         'products' => [
-    'type' => Type::listOf($productType),
-    'args' => [
-        'categoryId' => Type::int(),
-    ],
-    'resolve' => function($root, $args) {
-        $productModel = new \App\Classes\Models\Product();
-        $categoryId = $args['categoryId'] ?? null;
-        error_log("categoryId=" . $categoryId); // Debugging statement
+            'type' => Type::listOf($productType),
+            'args' => [
+                'categoryId' => Type::int(),
+            ],
+        'resolve' => function($root, $args) {
+            $productModel = new \App\Classes\Models\Product();
+            $categoryId = $args['categoryId'] ?? null;
+            error_log("categoryId=" . $categoryId); // Debugging statement
 
-        if ($categoryId !== null) {
-            if ($categoryId == 0) {
-                $products = $productModel->getAll();
+            if ($categoryId !== null) {
+                if ($categoryId == 0) {
+                    $products = $productModel->getAll();
+                } else {
+                    $products = $productModel->fetchProductsByCategory($categoryId);
+                }
             } else {
-                $products = $productModel->fetchProductsByCategory($categoryId);
+                $products = $productModel->getAll();
             }
-        } else {
-            $products = $productModel->getAll();
-        }
 
-        $productNameDescriptionModel = new \App\Classes\Models\ProductNameDescription();
-        $productGalleryModel = new \App\Classes\Models\ProductGallery();
-        $attributeItemModel = new \App\Classes\Models\AttributeItem();
-        $categoryModel = new \App\Classes\Models\Category();
+            $productNameDescriptionModel = new \App\Classes\Models\ProductNameDescription();
+            $productGalleryModel = new \App\Classes\Models\ProductGallery();
+            $attributeItemModel = new \App\Classes\Models\AttributeItem();
+            $categoryModel = new \App\Classes\Models\Category();
 
-        foreach ($products as &$product) {
-            $productNameDescription = $productNameDescriptionModel->getByProductIdAndLanguageId($product['id'], 'english');
-            if ($productNameDescription) {
-                $product['name'] = $productNameDescription['name'];
-                $product['description'] = $productNameDescription['description'];
+            foreach ($products as &$product) {
+                $productNameDescription = $productNameDescriptionModel->getByProductIdAndLanguageId($product['id'], 'english');
+                if ($productNameDescription) {
+                    $product['name'] = $productNameDescription['name'];
+                    $product['description'] = $productNameDescription['description'];
+                }
+                $product['gallery'] = array_map(function($gallery) {
+                    return $gallery['link'];
+                }, $productGalleryModel->getByProductId($product['id']));
+
+                $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
+                $product['category'] = $category['name'] ?? null;
+
+                $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
+                $product['attributes'] = [];
+                foreach ($uniqueAttributes as $uniqueAttribute) {
+                    $attributeItems = $attributeItemModel->getItemsByAttributeIdAndProductId($uniqueAttribute['attribute_id'], $product['id']);
+                    $product['attributes'][] = [
+                        'id' => $uniqueAttribute['attribute_id'],
+                        'name' => $uniqueAttribute['attribute_id'], // Assuming name is same as id
+                        'type' => 'text', // Assuming type is text, modify as needed
+                        'items' => $attributeItems,
+                    ];
+                }
             }
-            $product['gallery'] = array_map(function($gallery) {
-                return $gallery['link'];
-            }, $productGalleryModel->getByProductId($product['id']));
 
-            $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
-            $product['category'] = $category['name'] ?? null;
-
-            $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
-            $product['attributes'] = [];
-            foreach ($uniqueAttributes as $uniqueAttribute) {
-                $attributeItems = $attributeItemModel->getItemsByAttributeIdAndProductId($uniqueAttribute['attribute_id'], $product['id']);
-                $product['attributes'][] = [
-                    'id' => $uniqueAttribute['attribute_id'],
-                    'name' => $uniqueAttribute['attribute_id'], // Assuming name is same as id
-                    'type' => 'text', // Assuming type is text, modify as needed
-                    'items' => $attributeItems,
-                ];
-            }
-        }
-
-        return $products;
-    },
-],
+            return $products;
+        },
+        ],
+        'product' => [
+            'type' => $productType,
+            'args' => [
+                'id' => Type::nonNull(Type::string()),
+            ],
+            'resolve' => function($root, $args) {
+                $productModel = new \App\Classes\Models\Product();
+                return $productModel->getProductById($args['id']);
+            },
+        ],
     ],
 ]);
 
