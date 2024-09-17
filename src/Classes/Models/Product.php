@@ -5,6 +5,11 @@ namespace App\Classes\Models;
 use App\Classes\Model;
 use PDO;
 use App\Classes\Database;
+use App\Classes\Models\AttributeItem;
+use App\Classes\Models\TextAttribute;
+use App\Classes\Models\SwatchAttribute;
+use App\Classes\Models\Service;
+use Exception;
 
 
 class Product extends Model {
@@ -48,18 +53,43 @@ class Product extends Model {
             $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
             $product['category'] = $category['name'] ?? null;
 
-            $attributeItemModel = new AttributeItem();
+            
+            $attributeItemModel = new AttributeItem();     
             $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
             $product['attributes'] = [];
             foreach ($uniqueAttributes as $uniqueAttribute) {
                 $attributeItems = $attributeItemModel->getItemsByAttributeIdAndProductId($uniqueAttribute['attribute_id'], $product['id']);
+                
+                error_log("Starting service for try-catching for attribute type and name; attribute_id: " . $uniqueAttribute['attribute_id']);
+                try {
+                    $service = new Service();                    
+                    $attributeTypeAndName = $service->getAttributeTypeAndNameById($uniqueAttribute['attribute_id']);
+                    
+                } catch (Exception $e) {
+                    error_log("Error fetching attribute type and name for attribute_id " . $uniqueAttribute['attribute_id'] . ": " . $e->getMessage());
+                    continue; // Skip this attribute and continue with the next one
+                }
+                
+                
+                
                 $product['attributes'][] = [
                     'id' => $uniqueAttribute['attribute_id'],
-                    'name' => $uniqueAttribute['attribute_id'], // Assuming name is same as id
-                    'type' => 'text', // Assuming type is text, modify as needed
-                    'items' => $attributeItems,
+                    //'name' => $uniqueAttribute['attribute_id'],
+                    //'type' => $uniqueAttribute['attribute_id'],
+                    'name' => $attributeTypeAndName['name'],
+                    'type' => $attributeTypeAndName['type'],
+                    'items' => array_map(function($item) use ($uniqueAttribute) {
+                        return [
+                            //'id' => $uniqueAttribute['attribute_id'] . '-' . $item['id'],
+                            'id' => $item['id'],
+                            'display_value' => $item['display_value']
+                        ];
+                    }, $attributeItems)
                 ];
+                
             }
+                
+
         }
         return $product;
     }

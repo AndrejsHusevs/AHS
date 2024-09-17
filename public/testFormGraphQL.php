@@ -28,9 +28,30 @@ use App\Classes\Models\AttributeItem;
     <h1>GraphQL TESTING PAGE</h1>
    
     <form id="graphqlForm">
-        <textarea id="queryInput" name="query" rows="10" cols="80">{ categories { id name } }</textarea><br />
+        <textarea id="queryInput" name="query" rows="10" cols="80">
+            {
+             product(id: "apple-imac-2021") {
+                    id
+                    name
+                    gallery
+                    price_amount
+                    price_currency_symbol
+                    description
+                    attributes {
+                        id
+                        name
+                        items {
+                            id
+                            display_value
+                        }
+                    }
+                }
+            }
+        </textarea><br />
+        
         <input type="submit" value="Send Query" />
     </form>
+    <hr>
 
     <div id="responseOutput"></div>
 
@@ -61,78 +82,7 @@ use App\Classes\Models\AttributeItem;
 </script>
 
     <hr>
-    <?php
 
-$categoryModel = new Category();
-
-/*
-    echo "<hr>Categories:<br/>";                
-    print_r($categoryModel->getAllCategoryNamesByLanguageId("english"));
-*/  
- 
-/*
-    echo "<hr>Languages:<br/>";
-    $languageModel = new Language();  
-    print_r($languageModel->getAll());
-*/
-
-/*
-    echo "<hr>Attributes:<br/>";
-    $swatchAttributeModel = new SwatchAttribute();
-    $swatchAttributes = $swatchAttributeModel->getAll();
-    $textAttributeModel = new TextAttribute();
-    $textAttributes = $textAttributeModel->getAll();
-    $allAttributes = array_merge($swatchAttributes, $textAttributes);
-    print_r($allAttributes);
-*/
-
-    echo "<hr>Products:<br/>";
-    $productModel = new Product();
-    $products = $productModel->getAll();
-
-    $productNameDescriptionModel = new ProductNameDescription();
-    $productGalleryModel = new ProductGallery();
-    $attributeItemModel = new AttributeItem();
-
-    foreach ($products as &$product) {
-        
-        $productNameDescription = $productNameDescriptionModel->getByProductIdAndLanguageId($product['id'], 'english');
-        if ($productNameDescription) {
-            $product['name'] = $productNameDescription['name'];
-            $product['description'] = $productNameDescription['description'];
-        }
-        echo $product['id'] . "__________" . $product['name'] . "<br/>";
-
-        /*
-        $productGalleries = $productGalleryModel->getByProductId($product['id']);        
-        foreach ($productGalleries as $productGallery) {
-            echo "__________" . $productGallery['link'] . "<br/>";
-        }
-        */
-        // Fetch and print attribute items for the product
-        echo "Categories:<br/>";
-        $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
-        $product['category'] = $category['name'] ?? null;
-        echo "__________" . $product['category'] . "<br/>";
-
-/*
-        // Fetch and print attribute items for the product
-        echo "Attributes:<br/>";
-        $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
-        foreach ($uniqueAttributes as $uniqueAttribute) {
-            echo "__________" . $uniqueAttribute['attribute_id'] . ":<br/>";
-            $attributeItems = $attributeItemModel->getItemsByAttributeIdAndProductId($uniqueAttribute['attribute_id'], $product['id']);
-            foreach ($attributeItems as $attributeItem) {
-                echo "____________________" . $attributeItem['displayvalue'] . "<br/>";
-            }
-        }   
-*/
-        echo "<br/><br/>";
-    }
-
-
-
-    ?>
 
 </body>
 </html>

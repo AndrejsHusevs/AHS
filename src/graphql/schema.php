@@ -1,5 +1,9 @@
 <?php
 
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -12,7 +16,7 @@ use GraphQL\Type\Schema;
 $attributeType = new ObjectType([
     'name' => 'Attribute',
     'fields' => [
-        'displayvalue' => Type::nonNull(Type::string()),
+        'display_value' => Type::nonNull(Type::string()),
         'value' => Type::nonNull(Type::string()),
         'id' => Type::nonNull(Type::string()),
     ],
@@ -76,8 +80,6 @@ $queryType = new ObjectType([
         'resolve' => function($root, $args) {
             $productModel = new \App\Classes\Models\Product();
             $categoryId = $args['categoryId'] ?? null;
-            error_log("categoryId=" . $categoryId); // Debugging statement
-
             if ($categoryId !== null) {
                 if ($categoryId == 0) {
                     $products = $productModel->getAll();
@@ -102,21 +104,8 @@ $queryType = new ObjectType([
                 $product['gallery'] = array_map(function($gallery) {
                     return $gallery['link'];
                 }, $productGalleryModel->getByProductId($product['id']));
-
                 $category = $categoryModel->getCategoryNameByProductIdAndLanguageId($product['id'], 'english');
                 $product['category'] = $category['name'] ?? null;
-
-                $uniqueAttributes = $attributeItemModel->getUniqueAttributesByProductId($product['id']);
-                $product['attributes'] = [];
-                foreach ($uniqueAttributes as $uniqueAttribute) {
-                    $attributeItems = $attributeItemModel->getItemsByAttributeIdAndProductId($uniqueAttribute['attribute_id'], $product['id']);
-                    $product['attributes'][] = [
-                        'id' => $uniqueAttribute['attribute_id'],
-                        'name' => $uniqueAttribute['attribute_id'], // Assuming name is same as id
-                        'type' => 'text', // Assuming type is text, modify as needed
-                        'items' => $attributeItems,
-                    ];
-                }
             }
 
             return $products;

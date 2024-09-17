@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const ProductDetail = ({ product }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [selectedAttributes, setSelectedAttributes] = useState({});
 
     const handleThumbnailClick = (index) => {
         setCurrentImageIndex(index);
@@ -15,6 +16,13 @@ const ProductDetail = ({ product }) => {
         setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.gallery.length) % product.gallery.length);
     };
 
+    const handleAttributeSelect = (attributeId, itemId) => {
+        setSelectedAttributes((prevSelected) => ({
+            ...prevSelected,
+            [attributeId]: itemId,
+        }));
+    };
+
     return (
         <div className="product-detail container">            
             <div className="row">
@@ -24,9 +32,8 @@ const ProductDetail = ({ product }) => {
                         <img
                             key={index}
                             src={image}
-                            className="img-thumbnail mb-2"
+                            className="img-thumbnail mb-2 thumbnail-image"
                             alt={`Thumbnail ${index}`}
-                            style={{ width: '50px', height: '50px', cursor: 'pointer' }}
                             onClick={() => handleThumbnailClick(index)}
                         />
                     ))}
@@ -60,11 +67,17 @@ const ProductDetail = ({ product }) => {
                         {product.attributes && product.attributes.map((attribute, index) => (
                             <div key={index}>
                                 <strong>{attribute.name}:</strong>
-                                <ul>
+                                <div className="attribute-items">
                                     {attribute.items.map((item, idx) => (
-                                        <li key={idx}>{item.displayValue}</li>
+                                        <button
+                                            key={idx}
+                                            className={`btn btn-sm ${selectedAttributes[attribute.id] === item.id ? 'btn-primary' : 'btn-outline-primary'}`}
+                                            onClick={() => handleAttributeSelect(attribute.id, item.id)}
+                                        >
+                                            {item.display_value}
+                                        </button>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                         ))}
                     </div>

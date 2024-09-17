@@ -44,13 +44,25 @@ class AttributeItem extends Model {
     }
 
     public function getItemsByAttributeIdAndProductId($attribute_id, $product_id) {
-        $sql = 'SELECT ai.* FROM ahs_attribute_items ai
-                JOIN ahs_products_attribute_items pai ON ai.id = pai.item_id
-                WHERE ai.attribute_id = :attribute_id AND pai.product_id = :product_id';
+        error_log("AttributeItem: getItemsByAttributeIdAndProductId for attribute_id: " . $attribute_id . " and product_id: " . $product_id);
+        $sql = 'SELECT ai.id, ai.display_value FROM ahs_attribute_items ai
+                JOIN ahs_products_attribute_items pai ON ai.id = pai.item_id AND ai.attribute_id = :attribute_id
+                WHERE pai.attribute_id = :attribute_id AND pai.product_id = :product_id';
+
+
+
+/*
+SELECT ai.id, ai.display_value FROM ahs_attribute_items ai 
+JOIN ahs_products_attribute_items pai ON (ai.id = pai.item_id AND ai.attribute_id = 'With USB 3 ports') 
+WHERE pai.attribute_id = 'With USB 3 ports' AND pai.product_id = 'apple-imac-2021'; 
+*/
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':attribute_id', $attribute_id, PDO::PARAM_STR);
         $stmt->bindParam(':product_id', $product_id, PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("Query result: " . print_r($result, true));
+        return $result;
     }
 }

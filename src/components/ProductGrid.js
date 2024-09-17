@@ -50,23 +50,18 @@ const ProductGrid = ({ categoryId, onProductSelect }) => {
                     price_amount
                     price_currency_symbol
                     description
+                    attributes {
+                        id
+                        name
+                        items {
+                            id
+                            display_value
+                        }
+                    }
                 }
             }
         `;
-
-        /*const query = `
-            {
-             product(id: "jacket-canada-goosee") {
-                    id
-                    name
-                    gallery
-                    price_amount
-                    price_currency_symbol
-                    description
-                    
-                }
-            }
-        `;*/
+ 
 
         try {
             const response = await fetch('/ahs/public/graphql', {

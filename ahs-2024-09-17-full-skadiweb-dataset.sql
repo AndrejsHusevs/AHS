@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 08, 2024 at 06:37 PM
+-- Generation Time: Sep 17, 2024 at 07:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,7 +53,7 @@ INSERT INTO `ahs_attributes` (`attribute_id`, `name`, `type`) VALUES
 CREATE TABLE `ahs_attribute_items` (
   `id` varchar(15) NOT NULL,
   `attribute_id` varchar(25) NOT NULL,
-  `displayvalue` varchar(15) NOT NULL,
+  `display_value` varchar(15) NOT NULL,
   `value` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -61,7 +61,7 @@ CREATE TABLE `ahs_attribute_items` (
 -- Dumping data for table `ahs_attribute_items`
 --
 
-INSERT INTO `ahs_attribute_items` (`id`, `attribute_id`, `displayvalue`, `value`) VALUES
+INSERT INTO `ahs_attribute_items` (`id`, `attribute_id`, `display_value`, `value`) VALUES
 ('1T', 'Capacity', '1T', '1T'),
 ('256GB', 'Capacity', '256GB', '256GB'),
 ('40', 'Size', '40', '40'),
@@ -345,7 +345,7 @@ ALTER TABLE `ahs_categories`
 -- Indexes for table `ahs_category_names`
 --
 ALTER TABLE `ahs_category_names`
-  ADD PRIMARY KEY (`category_id`);
+  ADD PRIMARY KEY (`category_id`,`language_id`);
 
 --
 -- Indexes for table `ahs_languages`
