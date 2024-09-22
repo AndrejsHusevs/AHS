@@ -1,14 +1,25 @@
 <?php
 
-use GraphQL\Type\Definition\Type;
+namespace App\graphql;
 
-$mutationFields = [
-    'sum' => [
-        'type' => Type::int(),
-        'args' => [
-            'x' => ['type' => Type::int()],
-            'y' => ['type' => Type::int()],
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
+use App\Classes\Models\Order;
+
+$mutationType = new ObjectType([
+    'name' => 'Mutation',
+    'fields' => [
+        'createOrder' => [
+            'type' => Type::boolean(),
+            'args' => [
+                'content' => Type::nonNull(Type::string()),
+            ],
+            'resolve' => function($root, $args) {
+                $orderModel = new Order();
+                return $orderModel->createOrder($args['content']);
+            },
         ],
-        'resolve' => static fn ($calc, array $args): int => $args['x'] + $args['y'],
     ],
-];
+]);
+
+return $mutationType;

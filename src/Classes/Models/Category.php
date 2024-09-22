@@ -34,6 +34,22 @@ class Category extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCategoryNameByCategoryIdAndLanguageId($category_id, $language_id) {
+
+        error_log("Category ID: " . $category_id);  
+        $sql = 'SELECT name 
+        FROM ahs_category_names
+        WHERE language_id = :language_id AND category_id = :category_id';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':language_id', $language_id, PDO::PARAM_STR);
+        $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetch(PDO::FETCH_ASSOC);
+        error_log("Results: " . print_r($results, true));  
+        return $results;
+    }
+
     public function getCategoryNameByProductIdAndLanguageId($product_id, $language_id) {
         $sql = 'SELECT c.id, n.name 
                 FROM ahs_categories c

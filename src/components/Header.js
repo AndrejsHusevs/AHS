@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import logo from '../assets/brand-icon.png'; // Add your logo image here
+import cartIcon from '../assets/shopping-cart.png'; // Add your cart icon image here
 
-const Header = ({ onCategorySelect }) => {
+const Header = ({ onCategorySelect, onCartClick, categories: propCategories, selectedCategory }) => {
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState(null);
 
@@ -42,30 +44,40 @@ const Header = ({ onCategorySelect }) => {
     };
 
     return (
-        <header>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container">
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav mr-auto">
-                            {error ? (
-                                <li className="nav-item">
-                                    <span className="nav-link text-danger">{error}</span>
-                                </li>
-                            ) : (
-                                categories.map((category) => (
-                                    <li className="nav-item" key={category.id}>
-                                        <a className="nav-link" href="#" onClick={() => handleCategoryClick(category.id)}>{category.name}</a>
-                                    </li>
-                                ))
-                            )}
-                        </ul>
-                        <a className="navbar-brand ml-auto" href="/">Logo</a>
+        <header className="header">
+            <div className="container">
+                <div className="row justify-content-between align-items-center">
+                    <div className="col">
+                        <nav className="nav">
+                            {categories.map(category => {
+                                console.log(`selectedCategory: ${selectedCategory}, category.id: ${category.id}`);
+                                return (
+                                    <div key={category.id} className="nav-item">
+                                        <a
+                                            href="#"
+                                            className={`category-name ${selectedCategory === category.id ? 'selected' : ''}`}
+                                            onClick={() => handleCategoryClick(category.id)}
+                                        >
+                                            {category.name}
+                                            {selectedCategory === category.id && <div className="category-underline"></div>}
+                                        </a>
+                                    </div>
+                                );
+                            })}
+                        </nav>
+                    </div>
+                    <div className="col text-center">
+                        <a href="/" className="logo-link">
+                            <img src={logo} alt="Logo" className="logo-image" />
+                        </a>
+                    </div>
+                    <div className="col text-right">
+                        <button className="cart-button" onClick={onCartClick}>
+                            <img src={cartIcon} alt="Cart" className="cart-icon" />
+                        </button>
                     </div>
                 </div>
-            </nav>
+            </div>
         </header>
     );
 };

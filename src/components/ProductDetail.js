@@ -1,6 +1,7 @@
+// src/components/ProductDetail.js
 import React, { useState } from 'react';
 
-const ProductDetail = ({ product }) => {
+const ProductDetail = ({ product, onAddToCart }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedAttributes, setSelectedAttributes] = useState({});
 
@@ -21,6 +22,17 @@ const ProductDetail = ({ product }) => {
             ...prevSelected,
             [attributeId]: itemId,
         }));
+    };
+
+    const handleAddToCart = () => {
+        const attributesWithNames = product.attributes.reduce((acc, attribute) => {
+            acc[attribute.id] = {
+                name: attribute.name,
+                value: selectedAttributes[attribute.id]
+            };
+            return acc;
+        }, {});
+        onAddToCart({ product, selectedAttributes: attributesWithNames });
     };
 
     return (
@@ -82,7 +94,7 @@ const ProductDetail = ({ product }) => {
                         ))}
                     </div>
                     <p className="card-text"><strong>Price:</strong> {product.price_currency_symbol} {product.price_amount}</p>
-                    <button className="btn btn-primary">Add to Cart</button>
+                    <button className="btn btn-primary" onClick={handleAddToCart}>Add to Cart</button>
                 </div>
             </div>
             {/* Full width description below */}

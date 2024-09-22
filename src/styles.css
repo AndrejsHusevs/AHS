@@ -31,3 +31,73 @@
     margin-right: 5px;
     margin-bottom: 5px;
 }
+
+/* src/styles.css */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.cart-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 500px;
+}
+
+
+/* src/styles.css */
+.category-name {
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    margin-right: 20px; /* Add space between categories */
+    padding-bottom: 0.5em; /* Add padding to create space for the underline */
+}
+
+.category-underline {
+    position: absolute;
+    bottom: 0; /* Position the underline at the bottom of the category name */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: green;
+}
+
+.logo-link {
+    display: inline-block;
+}
+
+.logo-image {
+    width: 50px; /* Adjust the size of the logo */
+    height: auto;
+}
+
+.cart-icon {
+    width: 30px; /* Adjust the size of the cart icon */
+    height: auto;
+}
+
+.cart-button {
+    background: none; /* Remove the blue background */
+    border: none; /* Remove the border */
+    padding: 0; /* Remove padding */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+
+.category-title {
+    text-transform: camelcase; /* Capitalize the first letter of each word */
+    margin: 2em 0; /* Margin top and bottom */
+    color: green; /* Green color */
+    text-align: left; /* Center align the text */
+}

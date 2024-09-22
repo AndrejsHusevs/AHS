@@ -67,9 +67,17 @@ $queryType = new ObjectType([
     'fields' => [
         'categories' => [
             'type' => Type::listOf($categoryType),
-            'resolve' => function() {
+            'args' => [
+                'id' => Type::int(),
+            ],
+            'resolve' => function($root, $args) {
                 $categoryModel = new \App\Classes\Models\Category();
-                return $categoryModel->getAllCategoryNamesByLanguageId("english");
+                $categoryId = $args['id'] ?? null;
+                if ($categoryId !== null) {
+                    return [$categoryModel->getCategoryNameByCategoryIdAndLanguageId($categoryId, "english")];
+                } else {
+                    return $categoryModel->getAllCategoryNamesByLanguageId("english");
+                }
             },
         ],
         'products' => [
@@ -124,6 +132,9 @@ $queryType = new ObjectType([
     ],
 ]);
 
+$mutationType = require 'Mutation.php';
+
 return new Schema([
     'query' => $queryType,
+    'mutation' => $mutationType,
 ]);
