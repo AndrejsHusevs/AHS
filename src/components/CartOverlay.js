@@ -2,6 +2,8 @@
 import React from 'react';
 
 const CartOverlay = ({ cartItems, onClose, onRemoveItem, onMakeOrder }) => {
+    console.log('Rendering CartOverlay with items:', cartItems);
+
     return (
         <div className="cart-overlay">
             <div className="cart-content">
@@ -12,19 +14,26 @@ const CartOverlay = ({ cartItems, onClose, onRemoveItem, onMakeOrder }) => {
                 ) : (
                     <div>
                         <ul>
-                            {cartItems.map((item, index) => (
-                                <li key={index}>
-                                    <strong>{item.product.name}</strong>
-                                    <ul>
-                                        {Object.keys(item.selectedAttributes).map(attrId => (
-                                            <li key={attrId}>
-                                                <strong>{item.selectedAttributes[attrId].name}:</strong> {item.selectedAttributes[attrId].value}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <button className="btn btn-danger btn-sm" onClick={() => onRemoveItem(index)}>Remove</button>
-                                </li>
-                            ))}
+                            {cartItems.map((item, index) => {
+                                console.log('Rendering cart item:', item);
+                                return (
+                                    <li key={index}>
+                                        <strong>{item.product?.name || 'Unknown Product'}</strong>
+                                        <ul>
+                                            {Object.keys(item.selectedAttributes || {}).map(attrId => {
+                                                const attribute = item.selectedAttributes[attrId];
+                                                console.log('Rendering attribute:', attribute);
+                                                return (
+                                                    <li key={attrId}>
+                                                        <strong>{attribute?.name || 'Unknown Attribute'}:</strong> {attribute?.value || 'Unknown Value'}
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                        <button className="btn btn-danger btn-sm" onClick={() => onRemoveItem(index)}>Remove</button>
+                                    </li>
+                                );
+                            })}
                         </ul>
                         <button className="btn btn-success" onClick={onMakeOrder}>Make Order</button>
                     </div>

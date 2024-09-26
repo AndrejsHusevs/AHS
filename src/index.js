@@ -29,15 +29,22 @@ const App = () => {
         setSelectedProduct(product);
     };
 
-    const handleAddToCart = (item) => {
-        setCartItems((prevItems) => [...prevItems, item]);
+    const handleAddToCart = (product, selectedAttributes) => {
+        const newItem = {
+            product, // Ensure the product object is included
+            selectedAttributes,
+            quantity: 1
+        };
+        setCartItems((prevItems) => [...prevItems, newItem]);
     };
 
     const handleCartClick = () => {
+        console.log('Cart button clicked');
         setIsCartVisible(true);
     };
 
-    const handleCloseCart = () => {
+    const handleCartClose = () => {
+        console.log('Cart close button clicked');
         setIsCartVisible(false);
     };
 
@@ -93,7 +100,7 @@ const App = () => {
             {isCartVisible && (
                 <CartOverlay
                     cartItems={cartItems}
-                    onClose={handleCloseCart}
+                    onClose={handleCartClose}
                     onRemoveItem={handleRemoveItem}
                     onMakeOrder={handleMakeOrder}
                 />
