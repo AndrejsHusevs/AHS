@@ -32,6 +32,7 @@ const ProductDetail = ({ product, onAddToCart }) => {
             };
             return acc;
         }, {});
+        console.log('Adding product to cart with attributes:', attributesWithNames);
         onAddToCart({ product, selectedAttributes: attributesWithNames });
     };
 

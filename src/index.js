@@ -25,17 +25,58 @@ const App = () => {
         setSelectedProduct(null); // Reset selected product when category changes
     };
 
-    const handleProductSelect = (product) => {
-        setSelectedProduct(product);
+    const handleProductSelect = async (productId) => {
+        console.log('(in index.js) Product selected with ID:', productId);
+        const query = `
+            query ($productId: String!) {
+                product(id: $productId) {
+                    id
+                    name
+                    gallery
+                    price_amount
+                    price_currency_symbol
+                    description
+                    attributes {
+                        id
+                        name
+                        items {
+                            id
+                            display_value
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('/ahs/public/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query, variables: { productId: String(productId) } }), // Ensure productId is a string
+            });
+            const result = await response.json();
+            if (result.errors) {
+                console.error('Failed to fetch product details (5 - index.js)', result.errors);
+            } else {
+                console.log('Fetched product details:', result.data.product);
+                setSelectedProduct(result.data.product);
+            }
+        } catch (error) {
+            console.error('Failed to fetch product details (6 - index.js)', error);
+        }
     };
 
     const handleAddToCart = (product, selectedAttributes) => {
-        const newItem = {
+        console.log('(handleAddToCart) Adding item to cart:', product);
+        /*const newItem = {
             product, // Ensure the product object is included
             selectedAttributes,
             quantity: 1
         };
-        setCartItems((prevItems) => [...prevItems, newItem]);
+        console.log('newItem is:', newItem);*/
+        setCartItems((prevItems) => [...prevItems, product]);
     };
 
     const handleCartClick = () => {
@@ -49,10 +90,12 @@ const App = () => {
     };
 
     const handleRemoveItem = (index) => {
+        console.log('Removing item at index:', index);
         setCartItems((prevItems) => prevItems.filter((_, i) => i !== index));
     };
 
     const handleMakeOrder = async () => {
+        console.log('Making order with items:', cartItems);
         const content = cartItems.map(item => {
             const attributes = Object.keys(item.selectedAttributes).map(attrId => {
                 const attr = item.selectedAttributes[attrId];

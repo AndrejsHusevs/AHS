@@ -49,8 +49,7 @@ const Header = ({ onCategorySelect, onCartClick, categories: propCategories, sel
                 <div className="row justify-content-between align-items-center">
                     <div className="col">
                         <nav className="nav">
-                            {categories.map(category => {
-                                console.log(`selectedCategory: ${selectedCategory}, category.id: ${category.id}`);
+                            {categories.map(category => {                                
                                 return (
                                     <div key={category.id} className="nav-item">
                                         <a
