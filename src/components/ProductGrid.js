@@ -1,7 +1,8 @@
 // src/components/ProductGrid.js
 import React, { useState, useEffect } from 'react';
+import cartIcon from '../assets/shopping-cart.png';
 
-const ProductGrid = ({ categoryId, onProductSelect }) => {
+const ProductGrid = ({ categoryId, onProductSelect, cartItems }) => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const [categoryName, setCategoryName] = useState('');
@@ -16,6 +17,7 @@ const ProductGrid = ({ categoryId, onProductSelect }) => {
                         gallery
                         price_amount                        
                         price_currency_symbol
+                        instock
                     }
                 }
             `;
@@ -89,17 +91,33 @@ const ProductGrid = ({ categoryId, onProductSelect }) => {
         <div className="container">
             <h2 className="category-title">{categoryName}</h2>
             <div className="row">
-                {products.map((product) => (
-                    <div key={product.id} className="col-lg-4 col-md-6 mb-4">
-                        <div className="card h-100" onClick={() => onProductSelect(product.id)}>
-                            <img src={product.gallery[0]} className="card-img-top" alt={product.name} />
-                            <div className="card-body">
-                                <h5 className="card-title">{product.name}</h5>
-                                <p className="card-text"><strong>Price:</strong> {product.price_currency_symbol} {product.price_amount}</p>
+                {products.map((product) => {
+                    
+                    const isInCart = cartItems.some(item => item.product.id === product.id);
+                    return (
+                        <div key={product.id} className="col-lg-4 col-md-6 mb-4">
+                            <div className="card h-100 noborder" onClick={() => onProductSelect(product.id)}>
+                                <div className="product-image-container">
+                                    <img src={product.gallery[0]} className={`product-image ${!product.instock ? 'out-of-stock' : ''}`} alt={product.name} />
+                                    {!product.instock && (
+                                            <div className="out-of-stock-overlay">
+                                                <span>Out of Stock</span>
+                                            </div>
+                                    )}
+                                    {isInCart && (
+                                        <div className="cart-indicator">
+                                            <img src={cartIcon} alt="In Cart" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="card-body">
+                                    <h5 className="card-title">{product.name}</h5>
+                                    <p className="card-text">{product.price_currency_symbol} {product.price_amount}</p>                                   
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

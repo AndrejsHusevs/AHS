@@ -38,8 +38,7 @@ const Header = ({ onCategorySelect, onCartClick, categories: propCategories, sel
         fetchCategories();
     }, []);
 
-    const handleCategoryClick = (categoryId) => {    
-        console.log("Category clicked:", categoryId); // Debugging statement    
+    const handleCategoryClick = (categoryId) => {  
         onCategorySelect(categoryId);
     };
 

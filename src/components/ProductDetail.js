@@ -1,4 +1,3 @@
-// src/components/ProductDetail.js
 import React, { useState } from 'react';
 
 const ProductDetail = ({ product, onAddToCart }) => {
@@ -32,12 +31,11 @@ const ProductDetail = ({ product, onAddToCart }) => {
             };
             return acc;
         }, {});
-        console.log('Adding product to cart with attributes:', attributesWithNames);
         onAddToCart({ product, selectedAttributes: attributesWithNames });
     };
 
     return (
-        <div className="product-detail container">            
+        <div className="product-detail container">
             <div className="row">
                 {/* Left column with small product pictures */}
                 <div className="col-2 thumbnails-container">
@@ -79,15 +77,19 @@ const ProductDetail = ({ product, onAddToCart }) => {
                     <div className="card-text">
                         {product.attributes && product.attributes.map((attribute, index) => (
                             <div key={index}>
+                                {console.log('Attribute is :', attribute)}
+                                {console.log('Attribute type is :', attribute.type)}
                                 <strong>{attribute.name}:</strong>
                                 <div className="attribute-items">
+                                    
                                     {attribute.items.map((item, idx) => (
                                         <button
                                             key={idx}
                                             className={`btn btn-sm ${selectedAttributes[attribute.id] === item.id ? 'btn-primary' : 'btn-outline-primary'}`}
                                             onClick={() => handleAttributeSelect(attribute.id, item.id)}
+                                            style={attribute.type === 'swatch' ? { backgroundColor: item.value, border: '1px solid #ccc', width: '24px', height: '24px' } : {}}
                                         >
-                                            {item.display_value}
+                                            {attribute.type === 'swatch' ? '' : item.display_value}
                                         </button>
                                     ))}
                                 </div>
