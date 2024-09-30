@@ -82,16 +82,26 @@ const ProductDetail = ({ product, onAddToCart }) => {
                                 <strong>{attribute.name}:</strong>
                                 <div className="attribute-items">
                                     
-                                    {attribute.items.map((item, idx) => (
+                                {attribute.items.map((item, idx) => {
+                                    const isSwatch = attribute.type === 'swatch';
+                                    const backgroundColor = isSwatch ? item.value : '';
+                                    const isValidColor = /^#[0-9A-F]{6}$/i.test(backgroundColor) || /^(rgb|hsl)a?\((\d{1,3}%?,\s?){3,4}\)$/i.test(backgroundColor);
+
+                                    if (isSwatch && !isValidColor) {
+                                        console.warn(`Invalid color value: ${backgroundColor}`);
+                                    }
+
+                                    return (
                                         <button
                                             key={idx}
                                             className={`btn btn-sm ${selectedAttributes[attribute.id] === item.id ? 'btn-primary' : 'btn-outline-primary'}`}
                                             onClick={() => handleAttributeSelect(attribute.id, item.id)}
-                                            style={attribute.type === 'swatch' ? { backgroundColor: item.value, border: '1px solid #ccc', width: '24px', height: '24px' } : {}}
+                                            style={isSwatch && isValidColor ? { backgroundColor, border: '1px solid #ccc', width: '24px', height: '24px' } : {}}
                                         >
-                                            {attribute.type === 'swatch' ? '' : item.display_value}
+                                            {isSwatch ? '' : item.display_value}
                                         </button>
-                                    ))}
+                                    );
+                                })}
                                 </div>
                             </div>
                         ))}

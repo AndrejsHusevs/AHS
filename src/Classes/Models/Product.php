@@ -71,7 +71,8 @@ class Product extends Model {
                 }
                 
                 
-                
+                /*
+                //error_log("Product.php getProductById attributeItems = " . print_r($attributeItems,true));
                 $product['attributes'][] = [
                     'id' => $uniqueAttribute['attribute_id'],
                     //'name' => $uniqueAttribute['attribute_id'],
@@ -86,7 +87,20 @@ class Product extends Model {
                         ];
                     }, $attributeItems)
                 ];
-                
+                */
+
+                $attributeItemModel = new AttributeItem();
+                $product['attributes'][] = [
+                    'id' => $uniqueAttribute['attribute_id'],
+                    //'name' => $uniqueAttribute['attribute_id'],
+                    //'type' => $uniqueAttribute['attribute_id'],
+                    'name' => $attributeTypeAndName['name'],
+                    'type' => $attributeTypeAndName['type'],
+                    'items' => $attributeItems
+                ];
+
+
+
             }
                 
 

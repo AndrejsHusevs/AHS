@@ -39,8 +39,10 @@ const App = () => {
                     attributes {
                         id
                         name
+                        type
                         items {
                             id
+                            value
                             display_value
                         }
                     }

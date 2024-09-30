@@ -9,5 +9,5 @@ use App\Classes\Database;
 abstract class Attribute extends Model {
 
     abstract public function getType();
-
+    
 }
