@@ -115,6 +115,17 @@ $queryType = new ObjectType([
                 return $attribute;
             },
         ],
+        'getItemsByAttributeIdAndProductId' => [
+            'type' => Type::listOf($attributeItemType),
+            'args' => [
+                'product_id' => Type::nonNull(Type::string()),
+                'attribute_id' => Type::nonNull(Type::string()),
+            ],
+            'resolve' => function ($root, $args) {
+                $attributeItemModel = new AttributeItem();
+                return $attributeItemModel->getItemsByAttributeIdAndProductId($args['attribute_id'], $args['product_id']);
+            },
+        ],
         'products' => [
             'type' => Type::listOf($productType),
             'args' => [
@@ -162,11 +173,9 @@ $queryType = new ObjectType([
             'args' => [
                 'id' => Type::nonNull(Type::string()),
             ],
-            'resolve' => function($root, $args) {
-                error_log('product resolving 2: ' . $args['id']);
+            'resolve' => function($root, $args) {                
                 $productModel = new \App\Classes\Models\Product();
-                $result = $productModel->getProductById($args['id']);
-                error_log('product resolving 3: ' . print_r($result, true));
+                $result = $productModel->getProductById($args['id']);                
                 return $result;
             },
         ],

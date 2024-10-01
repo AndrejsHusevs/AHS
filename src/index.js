@@ -14,19 +14,20 @@ const App = () => {
         return savedCart ? JSON.parse(savedCart) : [];
     });
     const [isCartVisible, setIsCartVisible] = useState(false);
+  
 
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
     const handleCategorySelect = (categoryId) => {
-        console.log("Category selected (index.js App):", categoryId); // Debugging statement
+        //console.log("Category selected (index.js App):", categoryId); // Debugging statement
         setSelectedCategory(categoryId);
         setSelectedProduct(null); // Reset selected product when category changes
     };
 
     const handleProductSelect = async (productId) => {
-        console.log('(in index.js) Product selected with ID:', productId);
+        //console.log('(in index.js) Product selected with ID:', productId);
         const query = `
             query ($productId: String!) {
                 product(id: $productId) {
@@ -62,7 +63,7 @@ const App = () => {
             if (result.errors) {
                 console.error('Failed to fetch product details (5 - index.js)', result.errors);
             } else {
-                console.log('Fetched product details:', result.data.product);
+                //console.log('Fetched product details:', result.data.product);
                 setSelectedProduct(result.data.product);
             }
         } catch (error) {
@@ -70,23 +71,72 @@ const App = () => {
         }
     };
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = async (product) => {
 
-        console.log('(handleAddToCart) Adding item to cart:', product);
+    //console.log('(handleAddToCart) Adding item to cart:', product);
+
+    const updatedAttributes = [];
+
+    for (const attrKey of Object.keys(product.selectedAttributes)) {
+        const attribute = product.selectedAttributes[attrKey];
+        //console.log('Attribute to be looked for:', attribute);
+        //console.log('getItemsByAttributeIdAndProductId details for product.id=', product.product.id, " and attribute.id=", attribute.id);
+        const query = `
+            query {
+                getItemsByAttributeIdAndProductId(product_id: "${product.product.id}", attribute_id: "${attribute.id}") {
+                    id
+                    value
+                    display_value
+                }
+            }
+        `;
+
+       
+        let allPossibleAttributeItems = null;
+        try {
+            const response = await fetch('/ahs/public/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query, variables: {} }),
+            });
+            const result = await response.json();
+            if (result.errors) {
+                console.error('Failed to fetch getItemsByAttributeIdAndProductId details (7 - index.js)', result.errors);
+            } else {
+                //console.log('Fetched getItemsByAttributeIdAndProductId details:', result.data);
+                allPossibleAttributeItems = result.data.getItemsByAttributeIdAndProductId;                    
+            }
+        } catch (error) {
+            console.error('Failed to fetch product details (8 - index.js)', error);
+        }
+        //console.log('allPossibleAttributeItems:', allPossibleAttributeItems);
+        updatedAttributes.push({
+            ...attribute,
+            allPossibleAttributeItems
+        });
+    }
+
+    const updatedProduct = {
+        ...product,
+        selectedAttributes: updatedAttributes
+    };
 
         const existingItemIndex = cartItems.findIndex((item) => 
-            item.id === product.id && 
-            JSON.stringify(item.selectedAttributes) === JSON.stringify(product.selectedAttributes)
+            item.id === updatedProduct.id && 
+            JSON.stringify(item.selectedAttributes) === JSON.stringify(updatedProduct.selectedAttributes)
         );
-        console.log('Existing item index:', existingItemIndex);
+        //console.log('Existing item index:', existingItemIndex);
 
         if (existingItemIndex !== -1) {
             const updatedItems = [...cartItems];
             updatedItems[existingItemIndex].quantity++;
             setCartItems(updatedItems);            
         } else {
-            product.quantity = 1;
-            setCartItems((cartItems) => [...cartItems, product]);
+            updatedProduct.quantity = 1;
+            //console.log('Adding new item to cart:', updatedProduct);
+            setCartItems((cartItems) => [...cartItems, updatedProduct]);
         }
 
         
@@ -96,7 +146,7 @@ const App = () => {
 
 
     const onIncreaseQuantity = (index) => {
-        console.log('onIncreaseQuantity:', index);
+        //console.log('onIncreaseQuantity:', index);
         setCartItems((cartItems) => {
             const updatedItems = [...cartItems];
             updatedItems[index].quantity += 1;
@@ -105,13 +155,13 @@ const App = () => {
     };
     
     const onDecreaseQuantity = (index) => {
-        console.log('onDecreaseQuantity:', index);
+        //console.log('onDecreaseQuantity:', index);
         setCartItems((cartItems) => {
             const updatedItems = [...cartItems];
             if (updatedItems[index].quantity > 1) {
                 updatedItems[index].quantity -= 1;
             } else {
-                console.log('Removing item at index:', index);
+                //console.log('Removing item at index:', index);
                 handleRemoveItem(index)
             }
             return updatedItems;
@@ -119,8 +169,8 @@ const App = () => {
     };
 
 
-    const handleCartClick = () => {
-        console.log('Cart button clicked');
+    const handleCartClick = async () => {
+        //console.log('Cart button clicked');
         setIsCartVisible(true);
     };
 
@@ -130,7 +180,7 @@ const App = () => {
     };
 
     const handleRemoveItem = (index) => {
-        console.log('Removing item at index:', index);
+        //console.log('Removing item at index:', index);
         /*setCartItems((prevItems) => prevItems.filter((_, i) => i !== index));*/
 
         setCartItems(cartItems.filter((_, i) => i !== index));
@@ -138,7 +188,7 @@ const App = () => {
     };
 
     const handleMakeOrder = async () => {
-        console.log('Making order with items:', cartItems);
+        //console.log('Making order with items:', cartItems);
         const content = cartItems.map(item => {
             const attributes = Object.keys(item.selectedAttributes).map(attrId => {
                 const attr = item.selectedAttributes[attrId];
@@ -185,7 +235,7 @@ const App = () => {
             )}
             {isCartVisible && (
                 <CartOverlay
-                    cartItems={cartItems}
+                    cartItems={cartItems}  
                     onClose={handleCartClose}
                     onRemoveItem={handleRemoveItem}
                     onMakeOrder={handleMakeOrder}

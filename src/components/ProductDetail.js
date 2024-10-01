@@ -24,9 +24,11 @@ const ProductDetail = ({ product, onAddToCart }) => {
     };
 
     const handleAddToCart = () => {
-        const attributesWithNames = product.attributes.reduce((acc, attribute) => {
+        const attributesWithNames = product.attributes.reduce((acc, attribute) => {            
             acc[attribute.id] = {
                 name: attribute.name,
+                type: attribute.type,
+                id: attribute.id,
                 value: selectedAttributes[attribute.id]
             };
             return acc;
@@ -58,14 +60,14 @@ const ProductDetail = ({ product, onAddToCart }) => {
                     />
                     <button
                         className="btn btn-secondary position-absolute"
-                        style={{ top: '50%', left: '0', transform: 'translateY(-50%)' }}
+                        style={{ top: '50%', left: '10px', transform: 'translateY(-50%)' }}
                         onClick={handlePrevImage}
                     >
                         &lt;
                     </button>
                     <button
                         className="btn btn-secondary position-absolute"
-                        style={{ top: '50%', right: '0', transform: 'translateY(-50%)' }}
+                        style={{ top: '50%', right: '10px', transform: 'translateY(-50%)' }}
                         onClick={handleNextImage}
                     >
                         &gt;
@@ -77,8 +79,6 @@ const ProductDetail = ({ product, onAddToCart }) => {
                     <div className="card-text">
                         {product.attributes && product.attributes.map((attribute, index) => (
                             <div key={index}>
-                                {console.log('Attribute is :', attribute)}
-                                {console.log('Attribute type is :', attribute.type)}
                                 <strong>{attribute.name}:</strong>
                                 <div className="attribute-items">
                                     
